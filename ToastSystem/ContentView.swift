@@ -25,7 +25,6 @@ struct ContentView: View {
                             toast.show(.success, "Operation completed successfully!")
                         }
                         .buttonStyle(ToastButtonStyle(color: .green))
-                        
                         Button(" Error") {
                             toast.show(.error, "Failed to connect to server")
                         }
