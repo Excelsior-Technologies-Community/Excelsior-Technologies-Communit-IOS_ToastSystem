@@ -1,4 +1,3 @@
-# Excelsior-Technologies-Communit-IOS_ToastSystem
 Toast System – Short Guide
 ===========================
 
