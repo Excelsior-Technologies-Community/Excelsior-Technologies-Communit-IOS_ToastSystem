@@ -62,7 +62,7 @@ public struct ToastConfig {
 
 public final class ToastManager: ObservableObject {
     @Published public var currentToast: ToastConfig?
-    @Published public var show: Bool = false
+    @Published public var isShowing: Bool = false
     
     private var workItem: DispatchWorkItem?
     private var toastQueue: [ToastConfig] = []
@@ -112,7 +112,7 @@ public final class ToastManager: ObservableObject {
         }
         
         withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-            show = true
+            isShowing = true
         }
         
         workItem?.cancel()
@@ -129,7 +129,7 @@ public final class ToastManager: ObservableObject {
     /// Dismiss the current toast immediately.
     public func dismiss() {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            show = false
+            isShowing = false
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
@@ -187,7 +187,7 @@ public struct ToastView: View {
     
     public var body: some View {
         ZStack {
-            if toast.show, let config = toast.currentToast {
+            if toast.isShowing, let config = toast.currentToast {
                 toastContent(config)
                     .position(
                         x: UIScreen.main.bounds.width / 2,
