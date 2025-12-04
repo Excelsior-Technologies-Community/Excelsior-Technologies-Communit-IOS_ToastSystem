@@ -1,10 +1,12 @@
-
 //
 //  ContentView.swift
 //  ToastSystem
 //
 //  Created by Noman Belim on 04/12/25.
+//
+
 import SwiftUI
+import ScreenshotDetectorKit
 
 // MARK: - ContentView
 struct ContentView: View {
@@ -12,109 +14,122 @@ struct ContentView: View {
     @State private var counter = 0
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                Text("Toast System")
-                    .font(.title.bold())
-                    .padding(.top, 40)
-               
-                // MARK: - Basic Toasts Section
-                VStack(spacing: 16) {
-                    VStack(spacing: 12) {
-                        Button(" Success") {
-                            toast.show(.success, "Operation completed successfully!")
-                        }
-                        .buttonStyle(ToastButtonStyle(color: .green))
-                        Button(" Error") {
-                            toast.show(.error, "Failed to connect to server")
-                        }
-                        .buttonStyle(ToastButtonStyle(color: .red))
-                        
-                        Button("  Warning") {
-                            toast.show(.warning, "Your session is about to expire")
-                        }
-                        .buttonStyle(ToastButtonStyle(color: .orange))
-                        
-                        Button(" Info") {
-                            toast.show(.info, "New features are available")
-                        }
-                        .buttonStyle(ToastButtonStyle(color: .blue))
-                    }
+        // Protect everything inside from screenshots
+        ScreenshotProtectedView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    Text("Toast System")
+                        .font(.title.bold())
+                        .padding(.top, 40)
                     
-                    // MARK: - Position Section
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack{
-                            Spacer()
-                            Text("Position")
-                                .font(.title)
-                                .multilineTextAlignment(.center)
-                            Spacer()
-                        }
-                        
+                    // MARK: - Basic Toasts Section
+                    VStack(spacing: 16) {
                         VStack(spacing: 12) {
-                            Button("Top Position") {
-                                toast.show(.info, "Toast at top", position: .top)
-                            }
-                            .buttonStyle(ToastButtonStyle(color: .blue))
-                            
-                            Button("Center Position") {
-                                toast.show(.warning, "Toast at center", position: .center)
-                            }
-                            .buttonStyle(ToastButtonStyle(color: .orange))
-                            
-                            Button("Bottom Position") {
-                                toast.show(.success, "Toast at bottom", position: .bottom)
+                            Button(" Success") {
+                                toast.show(.success, "Operation completed successfully!")
                             }
                             .buttonStyle(ToastButtonStyle(color: .green))
-                        }
-                    }
-                    
-                    // MARK: - Duration & Advanced Section
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack{
-                            Spacer()
-                            Text("Duration")
-                                .font(.title)
-                                .multilineTextAlignment(.center)
-                            Spacer()
-                        }
-                        VStack(spacing: 12) {
-                            Button("Long Duration") {
-                                toast.show(.info, "This toast stays for 5 seconds", duration: 5.0)
-                            }
-                            .buttonStyle(ToastButtonStyle(color: .blue))
                             
-                            Button(" Vibration Alert") {
-                                // Strong error-style alert with haptic + vibration sound
-                                toast.show(.error, "Vibration alert triggered!", duration: 3.0, position: .center)
+                            Button(" Error") {
+                                toast.show(.error, "Failed to connect to server")
                             }
                             .buttonStyle(ToastButtonStyle(color: .red))
                             
-                            Button("With Action") {
-                                toast.show(
-                                    .success,
-                                    "Item added to cart",
-                                    duration: 4.0,
-                                    action: {
-                                        counter += 1
-                                        print("Undo tapped! Counter: \(counter)")
-                                    },
-                                    actionLabel: "Undo"
-                                )
+                            Button("  Warning") {
+                                toast.show(.warning, "Your session is about to expire")
                             }
-                            .buttonStyle(ToastButtonStyle(color: .green))
+                            .buttonStyle(ToastButtonStyle(color: .orange))
                             
-                            Button("Multiple Toasts") {
-                                toast.show(.success, "First toast")
-                                toast.show(.warning, "Second toast")
-                                toast.show(.error, "Third toast")
+                            Button(" Info") {
+                                toast.show(.info, "New features are available")
                             }
-                            .buttonStyle(ToastButtonStyle(color: .gray))
+                            .buttonStyle(ToastButtonStyle(color: .blue))
+                        }
+                        
+                        // MARK: - Position Section
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Spacer()
+                                Text("Position")
+                                    .font(.title)
+                                    .multilineTextAlignment(.center)
+                                Spacer()
+                            }
+                            
+                            VStack(spacing: 12) {
+                                Button("Top Position") {
+                                    toast.show(.info, "Toast at top", position: .top)
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .blue))
+                                
+                                Button("Center Position") {
+                                    toast.show(.warning, "Toast at center", position: .center)
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .orange))
+                                
+                                Button("Bottom Position") {
+                                    toast.show(.success, "Toast at bottom", position: .bottom)
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .green))
+                            }
+                        }
+                        
+                        // MARK: - Duration & Advanced Section
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Spacer()
+                                Text("Duration")
+                                    .font(.title)
+                                    .multilineTextAlignment(.center)
+                                Spacer()
+                            }
+                            
+                            VStack(spacing: 12) {
+                                Button("Long Duration") {
+                                    toast.show(.info, "This toast stays for 5 seconds", duration: 5.0)
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .blue))
+                                
+                                Button(" Vibration Alert") {
+                                    // Strong error-style alert with haptic + vibration sound
+                                    toast.show(.error, "Vibration alert triggered!", duration: 3.0, position: .center)
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .red))
+                                
+                                Button("With Action") {
+                                    toast.show(
+                                        .success,
+                                        "Item added to cart",
+                                        duration: 4.0,
+                                        action: {
+                                            counter += 1
+                                            print("Undo tapped! Counter: \(counter)")
+                                        },
+                                        actionLabel: "Undo"
+                                    )
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .green))
+                                
+                                Button("Multiple Toasts") {
+                                    toast.show(.success, "First toast")
+                                    toast.show(.warning, "Second toast")
+                                    toast.show(.error, "Third toast")
+                                }
+                                .buttonStyle(ToastButtonStyle(color: .gray))
+                            }
                         }
                     }
                 }
+                .padding()
             }
-            .padding()
+        }
+        // Show your own toast when the user takes a screenshot
+        .onReceive(
+            NotificationCenter.default.publisher(
+                for: UIApplication.userDidTakeScreenshotNotification
+            )
+        ) { _ in
+            toast.show(.warning, "Screenshot detected - content is protected")
         }
     }
 }

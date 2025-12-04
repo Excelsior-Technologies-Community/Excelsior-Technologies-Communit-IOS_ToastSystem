@@ -1,0 +1,15 @@
+{
+  "originHash" : "766dd5ea2adca30e427f4e2c07e95ae93e8540ac678ace58324a6b347a17cc39",
+  "pins" : [
+    {
+      "identity" : "excelsior-technologies-community-ios_screenshotdetector",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Excelsior-Technologies-Community/excelsior-Technologies-Community-IOS_ScreenShotDetector.git",
+      "state" : {
+        "branch" : "Mater",
+        "revision" : "e26c7aa59b1afb865ebdbcbd1923841804f9610b"
+      }
+    }
+  ],
+  "version" : 3
+}
