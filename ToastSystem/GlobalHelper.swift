@@ -220,7 +220,16 @@ struct ToastView: View {
         .padding(.vertical, 14)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(config.type.color.gradient)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            config.type.color.opacity(0.9),
+                            config.type.color
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
                 .shadow(color: config.type.color.opacity(0.3), radius: 10, y: 5)
         )
         .padding(.horizontal, 16)
