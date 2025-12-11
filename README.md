@@ -1,11 +1,11 @@
  
 ---
  
-🍞 ToastSystem – SwiftUI Toast & Haptic Alerts
+ ToastSystem – SwiftUI Toast & Haptic Alerts
 ---
 
 ```markdown
-# 🍞 ToastSystem – SwiftUI Toast & Haptic Alerts
+#   ToastSystem – SwiftUI Toast & Haptic Alerts
 
 ToastSystem is a lightweight, reusable SwiftUI package that provides elegant toast notifications with support for:
 
@@ -19,22 +19,21 @@ ToastSystem is a lightweight, reusable SwiftUI package that provides elegant toa
 
 ---
 
-# 📦 1. Add Dependency (Swift Package Manager)
+#   1. Add Dependency (Swift Package Manager)
 
 1. Open **Xcode → File → Add Packages…**
 2. Paste the repository URL:
 
 ```
 
-[https://github.com/Excelsior-Technologies-Community/Excelsior-Technologies-Communit-IOS_ToastSystem](https://github.com/Excelsior-Technologies-Community/Excelsior-Technologies-Communit-IOS_ToastSystem)
-
+https://github.com/Excelsior-Technologies-Community/IOS_ToastSystem
 ````
 
 3. Add the package to your app target.
 
 ---
 
-# 🔧 2. Import Module
+#   2. Import Module
 
 ```swift
 import ToastSystem
@@ -42,7 +41,7 @@ import ToastSystem
 
 ---
 
-# 🚀 3. Setup (Required)
+#   3. Setup (Required)
 
 ToastSystem needs one shared `ToastManager` and one global `ToastView` overlay.
 
@@ -70,13 +69,13 @@ struct MyApp: App {
 }
 ```
 
-> ⚠️ Important:
+>   Important:
 > Both `ContentView` **and** `ToastView` MUST receive `.environmentObject(toast)`
 > otherwise SwiftUI will crash.
 
 ---
 
-# 📲 4. Use Toasts in Any View
+#   4. Use Toasts in Any View
 
 In any screen:
 
@@ -86,7 +85,7 @@ In any screen:
 
 ---
 
-# 🎉 5. Toast Types & Usage Examples
+#   5. Toast Types & Usage Examples
 
 ToastSystem supports these toast types:
 
@@ -96,19 +95,19 @@ ToastSystem supports these toast types:
 toast.show(.success, "Operation completed successfully!")
 ```
 
-### **⚠️ Warning Toast**
+### **  Warning Toast**
 
 ```swift
 toast.show(.warning, "Your session is about to expire.")
 ```
 
-### **❌ Error Toast**
+### **  Error Toast**
 
 ```swift
 toast.show(.error, "Something went wrong. Please try again.")
 ```
 
-### **ℹ️ Info Toast**
+### **  Info Toast**
 
 ```swift
 toast.show(.info, "New update available.")
@@ -116,7 +115,7 @@ toast.show(.info, "New update available.")
 
 ---
 
-# 🎚 6. Customizing Toast
+#   6. Customizing Toast
 
 ### Position (top / center / bottom)
 
@@ -143,7 +142,7 @@ toast.show(
 
 ---
 
-# 📡 7. Multiple Toasts (Automatic Queue)
+#   7. Multiple Toasts (Automatic Queue)
 
 ```swift
 toast.show(.success, "Saved successfully")
@@ -155,9 +154,9 @@ Toasts will show **one at a time**, in order.
 
 ---
 
-# 🛠 8. Troubleshooting
+#   8. Troubleshooting
 
-### ❌ Crash: “No ObservableObject of type ToastManager found”
+###   Crash: “No ObservableObject of type ToastManager found”
 
 You forgot to add:
 
@@ -170,7 +169,7 @@ to BOTH:
 * Your root view (`ContentView`)
 * Your overlay (`ToastView()`)
 
-### ❌ Toast not showing
+###   Toast not showing
 
 Ensure:
 
@@ -180,7 +179,7 @@ Ensure:
 
 is inside your App file.
 
-### ❌ No vibration
+###   No vibration
 
 Haptics only work on a **real device**, not simulator.
 
