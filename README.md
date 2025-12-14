@@ -183,5 +183,38 @@ is inside your App file.
 
 Haptics only work on a **real device**, not simulator.
 
+***Full Example (Copy & Past)***
+struct ContentView: View {
+    @EnvironmentObject var toast: ToastManager
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+
+                Button("Show Success Toast") {
+                    toast.show(.success, "Operation completed successfully!")
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Show Warning Toast") {
+                    toast.show(.warning, "Your session is about to expire.")
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Show Error Toast") {
+                    toast.show(.error, "Something went wrong. Please try again.")
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button("Show Info Toast") {
+                    toast.show(.info, "New update available.")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding()
+        }
+    }
+}
+
 ---
  
