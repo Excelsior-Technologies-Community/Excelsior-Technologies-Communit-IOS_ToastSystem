@@ -184,8 +184,7 @@ is inside your App file.
 Haptics only work on a **real device**, not simulator.
 
 ***Full Example (Copy & Past)***
-struct ContentView: View {
-    @EnvironmentObject var toast: ToastManager
+
     
     var body: some View {
         ScrollView {
@@ -214,7 +213,7 @@ struct ContentView: View {
             .padding()
         }
     }
-}
+
 
 ---
  
