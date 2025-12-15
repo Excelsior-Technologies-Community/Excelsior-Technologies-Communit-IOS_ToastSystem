@@ -2,12 +2,11 @@
 //  ToastSystem.swift
 //  ToastSystem (Swift Package)
 //
-//  Public API so other projects can use the toast system via SPM.
 //
-
+//
+import SwiftUI
 import Foundation
 import SwiftUI
-import Combine
 import AudioToolbox
 import UIKit
 
@@ -95,12 +94,15 @@ public final class ToastManager: ObservableObject {
     }
     
     private func processQueue() {
-        guard !isProcessing, !toastQueue.isEmpty else { return }
-        
-        isProcessing = true
-        let config = toastQueue.removeFirst()
-        
-        displayToast(config)
+        // Must be run on main thread to check @Published properties
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self, !self.isProcessing, !self.toastQueue.isEmpty else { return }
+            
+            self.isProcessing = true
+            let config = self.toastQueue.removeFirst()
+            
+            self.displayToast(config)
+        }
     }
     
     private func displayToast(_ config: ToastConfig) {
@@ -142,24 +144,26 @@ public final class ToastManager: ObservableObject {
     // MARK: - Haptics & Sound
     
     private func triggerHaptic(for type: ToastType) {
-        switch type {
-        case .success:
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.success)
-        case .error:
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.error)
-        case .warning:
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.warning)
-        case .info:
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.impactOccurred()
+        // UI Haptics need to be run on the main thread
+        DispatchQueue.main.async {
+            switch type {
+            case .success:
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.success)
+            case .error:
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.error)
+            case .warning:
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.warning)
+            case .info:
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
+            }
         }
     }
     
     private func playHapticSound(for type: ToastType) {
-        // These IDs are used for short vibration / sound patterns.
         let soundID: SystemSoundID
         
         switch type {
@@ -177,29 +181,38 @@ public final class ToastManager: ObservableObject {
     }
 }
 
+
 // MARK: - Public Toast View
 
 public struct ToastView: View {
     @EnvironmentObject public var toast: ToastManager
     @State private var dragOffset: CGFloat = 0
     
+    // Approximate toast height for center/bottom calculation (adjust as needed)
+    private let toastApproximateHeight: CGFloat = 60
+    private let topSafeAreaOffset: CGFloat = 45 // For status bar / notch
+    private let bottomSafeAreaOffset: CGFloat = 20 // For home indicator
+    
     public init() {}
     
     public var body: some View {
-        ZStack {
+        // Using ZStack with .top alignment for correct positioning with offset
+        ZStack(alignment: .top) {
             if toast.isShowing, let config = toast.currentToast {
                 toastContent(config)
-                    .position(
-                        x: UIScreen.main.bounds.width / 2,
-                        y: yPosition(for: config.position)
-                    )
+                    // The .frame(maxWidth: .infinity) ensures the toast is centered
+                    // horizontally within the ZStack's default center alignment.
+                    .frame(maxWidth: .infinity)
+                    // .offset handles the vertical positioning from the ZStack's top edge.
+                    .offset(y: verticalOffset(for: config.position))
+                    .transition(.move(edge: getEdge(for: config.position)))
             }
         }
     }
     
     @ViewBuilder
     private func toastContent(_ config: ToastConfig) -> some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .center ,spacing: 12) {
             Text(config.message)
                 .font(.system(size: 15, weight: .medium))
                 .foregroundColor(.white)
@@ -246,13 +259,15 @@ public struct ToastView: View {
                 )
                 .shadow(color: config.type.color.opacity(0.3), radius: 10, y: 5)
         )
+        // Ensure horizontal padding is applied *outside* the toast background
         .padding(.horizontal, 16)
-        .offset(y: dragOffset)
         .gesture(
             DragGesture()
                 .onChanged { value in
+                    // Only allow drag in the direction that dismisses the toast
                     if (config.position == .top && value.translation.height < 0) ||
-                       (config.position == .bottom && value.translation.height > 0) {
+                       (config.position == .bottom && value.translation.height > 0) ||
+                       (config.position == .center) { // Allow dragging center toasts both ways
                         dragOffset = value.translation.height
                     }
                 }
@@ -267,16 +282,34 @@ public struct ToastView: View {
         )
     }
     
-    private func yPosition(for position: ToastPosition) -> CGFloat {
+    // MARK: - Positioning Logic (FIXED)
+    
+    private func getEdge(for position: ToastPosition) -> Edge {
+        switch position {
+        case .top: return .top
+        case .center: return .leading // Arbitrary for center
+        case .bottom: return .bottom
+        }
+    }
+
+    private func verticalOffset(for position: ToastPosition) -> CGFloat {
+        let screenHeight = UIScreen.main.bounds.height
+        
         switch position {
         case .top:
-            return 80 + dragOffset
+            // 1. Initial offset from the top of the screen + drag
+            return topSafeAreaOffset + dragOffset
+            
         case .center:
-            return UIScreen.main.bounds.height / 2
+            // 1. Calculate the center position
+            // 2. Adjust up by half the toast's estimated height
+            return (screenHeight / 2) - (toastApproximateHeight / 2) + dragOffset
+            
         case .bottom:
-            return UIScreen.main.bounds.height - 100 + dragOffset
+            // 1. Full height of screen
+            // 2. Subtract the toast's height
+            // 3. Subtract safe area/padding (16 + 20)
+            return screenHeight - (toastApproximateHeight + bottomSafeAreaOffset + 16) + dragOffset
         }
     }
 }
-
-
